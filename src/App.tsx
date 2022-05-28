@@ -2,7 +2,6 @@ import * as React from 'react';
 import {
   Alert,
   Badge,
-  Box,
   Button,
   Drawer,
   DrawerBody,
@@ -16,18 +15,16 @@ import {
   IconButton,
   Input,
   InputRightElement,
+  Spinner,
   Stack,
   Text,
   useDisclosure,
+  useToast,
   Wrap,
 } from '@chakra-ui/react';
 import io, { Socket } from 'socket.io-client';
 import { ChatIcon } from '@chakra-ui/icons';
-
-type ChatMessageProps = {
-  userName: string;
-  message: string;
-};
+import './App.css';
 
 type ChatMessage = {
   id: string;
@@ -41,45 +38,50 @@ type ChatUser = {
   name: string;
 };
 
-function ChatMessage({ userName, message }: ChatMessageProps) {
+function ChatMessage({ message }: { message: ChatMessage }) {
   return (
-    <Alert
-      status='info'
-      variant='left-accent'
-      borderRadius='base'
-      boxShadow='base'
-      bg='transparent'
-    >
+    <Alert status='info' variant='left-accent' borderRadius='base' boxShadow='base' bg='white'>
       <Wrap direction='column'>
-        <Badge w='min-content'>{userName}</Badge>
-        <Text>{message}</Text>
+        <Badge w='min-content'>{message.user.name}</Badge>
+        <Text>{message.text}</Text>
       </Wrap>
     </Alert>
   );
 }
 
 function App() {
+  const toast = useToast({ position: 'bottom-left' });
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [message, setMessage] = React.useState('');
   const [socket, setSocket] = React.useState<Socket>();
-  const [messages, setMessages] = React.useState<Array<ChatMessageProps>>([]);
+  const [messages, setMessages] = React.useState<Array<ChatMessage>>([]);
 
-  function onSubmitMessage(event: any) {
-    event.preventDefault();
-    socket?.emit('chat message', { message });
-  }
-
-  function handleChangeMessage(event: any) {
-    setMessage(event.target.value);
-  }
-
-  function handleReceptMessage(message: ChatMessageProps) {
-    setMessages((currentMessages) => {
-      console.log([...currentMessages, message]);
-      return [...currentMessages, message];
+  const handleReceptMessage = (message: ChatMessage) => {
+    setMessages((prevMessages) => {
+      const newMessages = [...prevMessages, message];
+      return newMessages;
     });
-  }
+
+    if (!isOpen) {
+      toast({
+        title: message.user.name,
+        render: () => <ChatMessage key={message.id} message={message}></ChatMessage>,
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const handleDeleteMessage = (messageID: string) => {
+    setMessages((prevMessages) => {
+      const newMessages = prevMessages.filter((message) => {
+        return message.id !== messageID;
+      });
+
+      return newMessages;
+    });
+  };
 
   React.useEffect(() => {
     const newSocket = io(process.env.REACT_APP_API_URL as string);
@@ -88,6 +90,17 @@ function App() {
       newSocket.close();
     };
   }, []);
+
+  React.useEffect(() => {
+    socket?.on('message', handleReceptMessage);
+    socket?.on('delete_message', handleDeleteMessage);
+    socket?.emit('get_messages');
+
+    return () => {
+      socket?.off('message', handleReceptMessage);
+      socket?.off('delete_message', handleDeleteMessage);
+    };
+  }, [socket]);
 
   return (
     <>
@@ -99,31 +112,36 @@ function App() {
         colorScheme='blue'
         size='lg'
         aria-label='Search database'
-        icon={<ChatIcon />}
+        icon={!socket ? <Spinner /> : <ChatIcon />}
         onClick={onOpen}
+        disabled={!socket}
       />
+
       <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='md'>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Chat</DrawerHeader>
 
-          <DrawerBody>
+          <DrawerBody overflow='overlay'>
             <Stack spacing={4}>
               {messages.map((itemMessage) => {
-                return (
-                  <ChatMessage
-                    key={itemMessage.message}
-                    userName={itemMessage.userName}
-                    message={itemMessage.message}
-                  ></ChatMessage>
-                );
+                return <ChatMessage key={itemMessage.id} message={itemMessage}></ChatMessage>;
               })}
             </Stack>
           </DrawerBody>
 
           <DrawerFooter>
-            <Box as='form' w='100%' onSubmit={onSubmitMessage}>
+            <form
+              style={{
+                width: '100%',
+              }}
+              onSubmit={(event) => {
+                event.preventDefault();
+                socket?.emit('message', message);
+                setMessage('');
+              }}
+            >
               <FormControl variant='floating' id='message'>
                 <Input
                   placeholder=' '
@@ -131,7 +149,9 @@ function App() {
                   autoComplete='off'
                   colorScheme='blue'
                   value={message}
-                  onChange={(event) => handleChangeMessage(event)}
+                  onChange={(event) => {
+                    setMessage(event.target.value);
+                  }}
                 />
                 <FormLabel>Escreva sua mensagem</FormLabel>
                 <InputRightElement>
@@ -140,7 +160,7 @@ function App() {
                   </Button>
                 </InputRightElement>
               </FormControl>
-            </Box>
+            </form>
           </DrawerFooter>
         </DrawerContent>
       </Drawer>
