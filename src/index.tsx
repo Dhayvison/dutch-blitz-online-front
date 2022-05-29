@@ -6,7 +6,7 @@ import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 const activeLabelStyles = {
-  transform: 'scale(0.85) translateY(-24px)',
+  transform: 'scale(0.85) translateY(-44px)',
 };
 
 const theme = extendTheme({
@@ -28,7 +28,6 @@ const theme = extendTheme({
               left: 0,
               zIndex: 2,
               position: 'absolute',
-              backgroundColor: 'white',
               pointerEvents: 'none',
               mx: 3,
               px: 2,
