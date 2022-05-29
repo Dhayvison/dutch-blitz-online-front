@@ -1,5 +1,7 @@
 import * as React from 'react';
 import {
+  Box,
+  Center,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -7,6 +9,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  Heading,
   IconButton,
   Spinner,
   useDisclosure,
@@ -22,6 +25,13 @@ function App() {
 
   return (
     <SocketContext.Provider value={socket}>
+      <Center h='100vh' w='100%'>
+        <Heading className='glitch' textAlign='center' as='h1' size='4xl' noOfLines={2}>
+          <span aria-hidden='true'>Dutch Blitz</span>
+          Dutch Blitz.io
+          <span aria-hidden='true'>Dutch Blitz</span>
+        </Heading>
+      </Center>
       <IconButton
         position='fixed'
         bottom={30}

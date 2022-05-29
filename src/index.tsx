@@ -10,6 +10,9 @@ const activeLabelStyles = {
 };
 
 const theme = extendTheme({
+  config: {
+    useSystemColorMode: true,
+  },
   components: {
     Form: {
       variants: {
