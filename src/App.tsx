@@ -44,7 +44,7 @@ function App() {
         disabled={!socket}
       />
 
-      <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='md'>
+      <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='lg'>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -54,7 +54,7 @@ function App() {
             <ChatMessagesList />
           </DrawerBody>
 
-          <DrawerFooter>
+          <DrawerFooter mt={4}>
             <ChatForm />
           </DrawerFooter>
         </DrawerContent>
