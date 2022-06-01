@@ -38,7 +38,7 @@ export function ChatMessage({ message }: { message: ChatMessageType }) {
   }, []);
 
   return (
-    <Box position='relative' borderRadius='base' boxShadow='base' ref={messagesEndRef}>
+    <Box bg='blackAlpha.300' position='relative' ref={messagesEndRef}>
       <MessageCaret />
       <Tag>
         <Avatar size='xs' name={message.user.name} mr={2} />

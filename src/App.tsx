@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Box,
   Center,
   Drawer,
   DrawerBody,
@@ -10,6 +11,7 @@ import {
   DrawerOverlay,
   Heading,
   IconButton,
+  Image,
   Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -24,12 +26,13 @@ function App() {
 
   return (
     <SocketContext.Provider value={socket}>
-      <Center h='100vh' w='100%'>
-        <Heading className='glitch' textAlign='center' as='h1' size='4xl' noOfLines={2}>
-          <span aria-hidden='true'>Dutch Blitz</span>
-          Dutch Blitz.io
-          <span aria-hidden='true'>Dutch Blitz</span>
-        </Heading>
+      <Heading position='absolute' className='glitch' as='h1' size='xs' noOfLines={1} m={5}>
+        <span aria-hidden='true'>Dutch Blitz</span>
+        Dutch Blitz.io
+        <span aria-hidden='true'>Dutch Blitz</span>
+      </Heading>
+      <Center h='100vh' p={100}>
+        <Image src='/assets/images/logo_db.png' alt='Dutch Blitz logo' h='100%' fit='contain' />
       </Center>
       <IconButton
         position='fixed'
