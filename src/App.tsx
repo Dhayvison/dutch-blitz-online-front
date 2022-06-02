@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {
-  Box,
   Center,
   Drawer,
   DrawerBody,
@@ -20,9 +19,25 @@ import './App.css';
 import { SocketContext, socket } from './context/socket-context';
 import { ChatMessagesList } from './components/Chat/ChatMessagesList';
 import { ChatForm } from './components/Chat/ChatForm';
+import VanillaTilt from 'vanilla-tilt';
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const imageLogo = React.useRef<any>();
+
+  React.useEffect(() => {
+    VanillaTilt.init(imageLogo.current, {
+      max: 10,
+      perspective: 1000,
+      scale: 1,
+      speed: 300,
+      transition: true,
+      reset: false,
+      easing: 'cubic-bezier(.03,.98,.52,.99)',
+      glare: true,
+      gyroscope: true,
+    });
+  }, []);
 
   return (
     <SocketContext.Provider value={socket}>
@@ -31,8 +46,17 @@ function App() {
         Dutch Blitz.io
         <span aria-hidden='true'>Dutch Blitz</span>
       </Heading>
-      <Center h='100vh' p={100}>
-        <Image src='/assets/images/logo_db.png' alt='Dutch Blitz logo' h='100%' fit='contain' />
+      <Center h='100vh' p={100} overflow='hidden'>
+        <Image
+          src='/assets/images/logo_db.png'
+          alt='Dutch Blitz logo'
+          h='100%'
+          fit='contain'
+          ref={imageLogo}
+          data-tilt-full-page-listening
+          data-tilt-glare
+          data-tilt-max-glare='0.8'
+        />
       </Center>
       <IconButton
         position='fixed'
