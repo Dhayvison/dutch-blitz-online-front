@@ -23,6 +23,7 @@ import VanillaTilt from 'vanilla-tilt';
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  // eslint-disable-next-line
   const imageLogo = React.useRef<any>();
 
   React.useEffect(() => {
