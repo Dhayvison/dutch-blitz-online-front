@@ -10,6 +10,7 @@ import {
   DrawerOverlay,
   Heading,
   IconButton,
+  Image,
   Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -18,18 +19,44 @@ import './App.css';
 import { SocketContext, socket } from './context/socket-context';
 import { ChatMessagesList } from './components/Chat/ChatMessagesList';
 import { ChatForm } from './components/Chat/ChatForm';
+import VanillaTilt from 'vanilla-tilt';
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const imageLogo = React.useRef<any>();
+
+  React.useEffect(() => {
+    VanillaTilt.init(imageLogo.current, {
+      max: 10,
+      perspective: 1000,
+      scale: 1,
+      speed: 300,
+      transition: true,
+      reset: false,
+      easing: 'cubic-bezier(.03,.98,.52,.99)',
+      glare: true,
+      gyroscope: true,
+    });
+  }, []);
 
   return (
     <SocketContext.Provider value={socket}>
-      <Center h='100vh' w='100%'>
-        <Heading className='glitch' textAlign='center' as='h1' size='4xl' noOfLines={2}>
-          <span aria-hidden='true'>Dutch Blitz</span>
-          Dutch Blitz.io
-          <span aria-hidden='true'>Dutch Blitz</span>
-        </Heading>
+      <Heading position='absolute' className='glitch' as='h1' size='xs' noOfLines={1} m={5}>
+        <span aria-hidden='true'>Dutch Blitz</span>
+        Dutch Blitz.io
+        <span aria-hidden='true'>Dutch Blitz</span>
+      </Heading>
+      <Center h='100vh' p={100} overflow='hidden'>
+        <Image
+          src='/assets/images/logo_db.png'
+          alt='Dutch Blitz logo'
+          h='100%'
+          fit='contain'
+          ref={imageLogo}
+          data-tilt-full-page-listening
+          data-tilt-glare
+          data-tilt-max-glare='0.8'
+        />
       </Center>
       <IconButton
         position='fixed'
@@ -44,7 +71,7 @@ function App() {
         disabled={!socket}
       />
 
-      <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='md'>
+      <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='lg'>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
@@ -54,7 +81,7 @@ function App() {
             <ChatMessagesList />
           </DrawerBody>
 
-          <DrawerFooter>
+          <DrawerFooter mt={4}>
             <ChatForm />
           </DrawerFooter>
         </DrawerContent>
