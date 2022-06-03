@@ -8,9 +8,12 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  FormControl,
   Heading,
   IconButton,
   Image,
+  Input,
+  Progress,
   Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
@@ -20,6 +23,7 @@ import { SocketContext, socket } from './context/socket-context';
 import { ChatMessagesList } from './components/Chat/ChatMessagesList';
 import { ChatForm } from './components/Chat/ChatForm';
 import VanillaTilt from 'vanilla-tilt';
+import { useDebouncedCallback } from 'use-debounce';
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -40,6 +44,21 @@ function App() {
     });
   }, []);
 
+  const [nickname, setNickname] = React.useState('');
+  const [showChat, setShowChat] = React.useState(false);
+
+  const setSocketUsername = useDebouncedCallback(() => {
+    socket?.emit('user_name', nickname);
+    localStorage.setItem('nickname', nickname);
+    setShowChat(true);
+  }, 1000);
+
+  React.useEffect(() => {
+    const storageNickname = localStorage.getItem('nickname');
+    setNickname(storageNickname ?? '');
+    setSocketUsername();
+  }, []);
+
   return (
     <SocketContext.Provider value={socket}>
       <Heading position='absolute' className='glitch' as='h1' size='xs' noOfLines={1} m={5}>
@@ -47,7 +66,7 @@ function App() {
         Dutch Blitz.io
         <span aria-hidden='true'>Dutch Blitz</span>
       </Heading>
-      <Center h='100vh' p={100} overflow='hidden'>
+      <Center h='100vh' p={100} overflow='hidden' flexDirection='column'>
         <Image
           src='/assets/images/logo_db.png'
           alt='Dutch Blitz logo'
@@ -58,19 +77,40 @@ function App() {
           data-tilt-glare
           data-tilt-max-glare='0.8'
         />
+        <FormControl variant='floating' id='nickname' mb={10} w='75%' maxW={500}>
+          <Input
+            isRequired
+            placeholder='Nickname'
+            colorScheme='blue'
+            value={nickname}
+            onChange={(event) => {
+              setNickname(event.target.value);
+              setSocketUsername();
+            }}
+            variant='flushed'
+            size='lg'
+            spellCheck='false'
+            fontWeight='bold'
+            fontSize='2xl'
+          />
+          {nickname && showChat && <Progress size='xs' isIndeterminate />}
+        </FormControl>
       </Center>
-      <IconButton
-        position='fixed'
-        bottom={30}
-        right={30}
-        boxShadow='md'
-        colorScheme='blue'
-        size='lg'
-        aria-label='Search database'
-        icon={!socket ? <Spinner /> : <ChatIcon />}
-        onClick={onOpen}
-        disabled={!socket}
-      />
+
+      {nickname && showChat && (
+        <IconButton
+          position='fixed'
+          bottom={30}
+          right={30}
+          boxShadow='md'
+          colorScheme='blue'
+          size='lg'
+          aria-label='Search database'
+          icon={!socket ? <Spinner /> : <ChatIcon />}
+          onClick={onOpen}
+          disabled={!socket}
+        />
+      )}
 
       <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='lg'>
         <DrawerOverlay />
