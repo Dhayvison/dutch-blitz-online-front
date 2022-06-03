@@ -19,6 +19,7 @@ export function ChatForm() {
     >
       <FormControl variant='floating' id='message'>
         <Input
+          autoFocus
           placeholder=' '
           isRequired
           autoComplete='off'
