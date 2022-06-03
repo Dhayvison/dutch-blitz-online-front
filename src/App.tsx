@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Box,
   Center,
   Drawer,
   DrawerBody,
@@ -24,6 +25,7 @@ import { ChatMessagesList } from './components/Chat/ChatMessagesList';
 import { ChatForm } from './components/Chat/ChatForm';
 import VanillaTilt from 'vanilla-tilt';
 import { useDebouncedCallback } from 'use-debounce';
+import { PingTrigger } from './components/PingTrigger';
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,11 +63,14 @@ function App() {
 
   return (
     <SocketContext.Provider value={socket}>
-      <Heading position='absolute' className='glitch' as='h1' size='xs' noOfLines={1} m={5}>
-        <span aria-hidden='true'>Dutch Blitz</span>
-        Dutch Blitz.io
-        <span aria-hidden='true'>Dutch Blitz</span>
-      </Heading>
+      <Box position='absolute' m={5}>
+        <Heading className='glitch' as='h1' size='xs' noOfLines={1} mb={4}>
+          <span aria-hidden='true'>Dutch Blitz</span>
+          Dutch Blitz.io
+          <span aria-hidden='true'>Dutch Blitz</span>
+        </Heading>
+        <PingTrigger></PingTrigger>
+      </Box>
       <Center h='100vh' p={100} overflow='hidden' flexDirection='column' bg='black'>
         <Image
           src='/assets/images/logo_db.png'
