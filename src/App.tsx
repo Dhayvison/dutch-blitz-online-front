@@ -66,7 +66,7 @@ function App() {
         Dutch Blitz.io
         <span aria-hidden='true'>Dutch Blitz</span>
       </Heading>
-      <Center h='100vh' p={100} overflow='hidden' flexDirection='column'>
+      <Center h='100vh' p={100} overflow='hidden' flexDirection='column' bg='black'>
         <Image
           src='/assets/images/logo_db.png'
           alt='Dutch Blitz logo'
