@@ -17,6 +17,7 @@ import {
   Input,
   Progress,
   Spinner,
+  Tag,
   useDisclosure,
 } from '@chakra-ui/react';
 import { ChatIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
@@ -56,6 +57,7 @@ function App() {
   const [nickname, setNickname] = React.useState('');
   const [showChat, setShowChat] = React.useState(false);
   const [userIsReady, setUserIsReady] = React.useState(false);
+  const [readyPlayers, setReadyPlayer] = React.useState(0);
 
   const setSocketUsername = useDebouncedCallback(() => {
     socket?.emit('user_name', nickname);
@@ -68,10 +70,15 @@ function App() {
     setUserIsReady((current) => !current);
   };
 
+  const handleReadyPlayers = (players: number) => {
+    setReadyPlayer(players);
+  };
+
   React.useEffect(() => {
     const storageNickname = localStorage.getItem('nickname');
     setNickname(storageNickname ?? '');
     setSocketUsername();
+    socket.on('ready_players', handleReadyPlayers);
   }, []);
 
   return (
@@ -114,18 +121,23 @@ function App() {
           {nickname && showChat && <Progress size='xs' isIndeterminate />}
         </FormControl>
         {nickname && showChat && (
-          <Button
-            className='animate__animated animate__backInUp'
-            rightIcon={userIsReady ? <CloseIcon /> : <CheckIcon />}
-            size='lg'
-            variant={userIsReady ? 'outline' : 'solid'}
-            colorScheme={userIsReady ? 'pink' : 'teal'}
-            px='10'
-            py='4'
-            onClick={handleSetUserReady}
-          >
-            {userIsReady ? 'Cancelar' : 'Começar'}
-          </Button>
+          <>
+            <Button
+              className='animate__animated animate__backInUp'
+              rightIcon={userIsReady ? <CloseIcon /> : <CheckIcon />}
+              size='lg'
+              variant={userIsReady ? 'outline' : 'solid'}
+              colorScheme={userIsReady ? 'pink' : 'teal'}
+              px='10'
+              py='4'
+              onClick={handleSetUserReady}
+            >
+              {userIsReady ? 'Cancelar' : 'Começar'}
+            </Button>
+            <Tag variant='solid' colorScheme='teal'>
+              {readyPlayers} {readyPlayers === 1 ? 'jogador pronto': 'jogadores prontos'}
+            </Tag>
+          </>
         )}
         {userIsReady && (
           <Timer
