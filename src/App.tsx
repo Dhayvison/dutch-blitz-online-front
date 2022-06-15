@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {
   Box,
+  Button,
   Center,
   Drawer,
   DrawerBody,
@@ -18,14 +19,17 @@ import {
   Spinner,
   useDisclosure,
 } from '@chakra-ui/react';
-import { ChatIcon } from '@chakra-ui/icons';
-import './App.css';
+import { ChatIcon, CheckIcon, CloseIcon } from '@chakra-ui/icons';
 import { SocketContext, socket } from './context/socket-context';
 import { ChatMessagesList } from './components/Chat/ChatMessagesList';
 import { ChatForm } from './components/Chat/ChatForm';
 import VanillaTilt from 'vanilla-tilt';
 import { useDebouncedCallback } from 'use-debounce';
 import { PingTrigger } from './components/PingTrigger';
+import Timer from './components/Timer';
+
+import './App.css';
+import 'animate.css';
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,26 +38,35 @@ function App() {
 
   React.useEffect(() => {
     VanillaTilt.init(imageLogo.current, {
-      max: 10,
       perspective: 1000,
       scale: 1,
-      speed: 300,
+      speed: 3000,
       transition: true,
       reset: false,
       easing: 'cubic-bezier(.03,.98,.52,.99)',
       glare: true,
       gyroscope: true,
+      gyroscopeMinAngleX: -45,
+      gyroscopeMaxAngleX: 45,
+      gyroscopeMinAngleY: -45,
+      gyroscopeMaxAngleY: 45,
     });
   }, []);
 
   const [nickname, setNickname] = React.useState('');
   const [showChat, setShowChat] = React.useState(false);
+  const [userIsReady, setUserIsReady] = React.useState(false);
 
   const setSocketUsername = useDebouncedCallback(() => {
     socket?.emit('user_name', nickname);
     localStorage.setItem('nickname', nickname);
     setShowChat(true);
   }, 1000);
+
+  const handleSetUserReady = () => {
+    socket?.emit('user_ready', !userIsReady);
+    setUserIsReady((current) => !current);
+  };
 
   React.useEffect(() => {
     const storageNickname = localStorage.getItem('nickname');
@@ -100,10 +113,31 @@ function App() {
           />
           {nickname && showChat && <Progress size='xs' isIndeterminate />}
         </FormControl>
+        {nickname && showChat && (
+          <Button
+            className='animate__animated animate__backInUp'
+            rightIcon={userIsReady ? <CloseIcon /> : <CheckIcon />}
+            size='lg'
+            variant={userIsReady ? 'outline' : 'solid'}
+            colorScheme={userIsReady ? 'pink' : 'teal'}
+            px='10'
+            py='4'
+            onClick={handleSetUserReady}
+          >
+            {userIsReady ? 'Cancelar' : 'Começar'}
+          </Button>
+        )}
+        {userIsReady && (
+          <Timer
+            title='Aguardando jogadores...'
+            text='A partida iniciará automaticamente quando todos estiverem prontos'
+          ></Timer>
+        )}
       </Center>
 
       {nickname && showChat && (
         <IconButton
+          className='animate__animated animate__bounceInRight'
           position='fixed'
           bottom={30}
           right={30}
