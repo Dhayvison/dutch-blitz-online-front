@@ -29,6 +29,7 @@ import { ChatMessagesList } from '../components/Chat/ChatMessagesList';
 import { ChatForm } from '../components/Chat/ChatForm';
 import { PingTrigger } from '../components/PingTrigger';
 import Timer from '../components/Timer';
+import LogoTextGlitch from '../components/LogoTextGlitch';
 
 export default function Lobby() {
   const navigate = useNavigate();
@@ -86,11 +87,7 @@ export default function Lobby() {
   return (
     <SocketContext.Provider value={socket}>
       <Box position='absolute' m={5}>
-        <Heading className='glitch' as='h1' size='xs' noOfLines={1} mb={4}>
-          <span aria-hidden='true'>Dutch Blitz</span>
-          Dutch Blitz.io
-          <span aria-hidden='true'>Dutch Blitz</span>
-        </Heading>
+        <LogoTextGlitch></LogoTextGlitch>
         <PingTrigger></PingTrigger>
       </Box>
       <Center h='100vh' p={100} overflow='hidden' flexDirection='column' bg='black'>
