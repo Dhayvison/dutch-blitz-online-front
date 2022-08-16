@@ -167,7 +167,7 @@ export default function Lobby() {
 
       <Drawer isOpen={isOpen} placement='right' onClose={onClose} size='lg'>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent bg='rgba(0, 0, 0, 0.61)' backdropFilter='blur(10px)'>
           <DrawerCloseButton />
           <DrawerHeader>Chat</DrawerHeader>
 
