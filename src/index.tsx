@@ -9,9 +9,9 @@ const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 const theme = extendTheme(themeConfig);
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <ChakraProvider theme={theme}>
       <App />
     </ChakraProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
