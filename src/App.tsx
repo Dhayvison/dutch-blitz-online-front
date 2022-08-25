@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Lobby from './pages/Lobby';
-import Table from './pages/Table';
+import SelectDeck from './pages/SelectDeck';
 
 import './App.css';
 import 'animate.css';
@@ -11,7 +11,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Lobby />}></Route>
-        <Route path='/game' element={<Table />}></Route>
+        <Route path='/game' element={<SelectDeck />}></Route>
       </Routes>
     </BrowserRouter>
   );
