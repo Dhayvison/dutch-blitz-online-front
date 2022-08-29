@@ -87,10 +87,18 @@ export default function Lobby() {
           </>
         )}
         {userIsReady && (
-          <Timer
-            title='Aguardando jogadores...'
-            text='A partida iniciará automaticamente quando todos estiverem prontos'
-          ></Timer>
+          <Box
+            className='animate__animated animate__fadeIn'
+            maxW='25%'
+            position='fixed'
+            bottom={30}
+            left={30}
+          >
+            <Timer
+              title='Aguardando jogadores...'
+              text='A partida iniciará automaticamente quando todos estiverem prontos'
+            ></Timer>
+          </Box>
         )}
       </Center>
 

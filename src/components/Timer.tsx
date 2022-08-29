@@ -3,11 +3,16 @@ import * as React from 'react';
 
 type TimerProps = {
   title: string;
-  text: string;
+  text?: string;
 };
 
 export default function Timer({ title, text }: TimerProps) {
   const [seconds, setSeconds] = React.useState(0);
+  
+  const minutes = Math.floor(seconds / 60);
+  const minutesText = minutes > 9 ? minutes.toString() : `0${minutes}`;
+  const timerSeconds = seconds - minutes * 60;
+  const secondsText = timerSeconds > 9 ? timerSeconds.toString() : `0${timerSeconds}`
 
   React.useEffect(() => {
     setInterval(() => {
@@ -16,16 +21,10 @@ export default function Timer({ title, text }: TimerProps) {
   }, []);
 
   return (
-    <Stat
-      className='animate__animated animate__fadeIn'
-      maxW='25%'
-      position='fixed'
-      bottom={30}
-      left={30}
-    >
+    <Stat>
       <StatLabel>{title}</StatLabel>
-      <StatNumber>{seconds} s</StatNumber>
-      <StatHelpText>{text}</StatHelpText>
+      <StatNumber>{`${minutesText}:${secondsText}`}</StatNumber>
+      {text && <StatHelpText>{text}</StatHelpText>} 
     </Stat>
   );
 }
