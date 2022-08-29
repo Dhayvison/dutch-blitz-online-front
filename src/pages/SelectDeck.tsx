@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { Box, Center, HStack, useRadio, useRadioGroup } from '@chakra-ui/react';
+import Timer from '../components/Timer';
 
+// eslint-disable-next-line
 function RadioCard(props: any) {
   const { getInputProps, getCheckboxProps } = useRadio(props);
 
@@ -9,6 +11,8 @@ function RadioCard(props: any) {
 
   return (
     <Center
+      boxShadow='base'
+      className='animate__animated animate__flipInY'
       style={{
         aspectRatio: '1 / 1.618',
       }}
@@ -83,12 +87,41 @@ export default function SelectDeck() {
   const group = getRootProps();
   return (
     <Center h='100vh'>
+      <Box
+        boxShadow='base'
+        className='animate__animated animate__slideInDown'
+        maxW='25%'
+        position='fixed'
+        top={0}
+        px={40}
+        py={5}
+        bg='purple.600'
+        style={{
+          textAlign: 'center',
+          clipPath: 'polygon(29% 100%, 75% 100%, 100% 0, 0 0)',
+        }}
+      >
+        <Timer title='Aguardando jogadores...'></Timer>
+      </Box>
       <HStack {...group} gap={10}>
         {options.map(({ symbol, value, color }) => {
           const radio = getRadioProps({ value });
-          return <RadioCard key={value} color={color} symbol={symbol} {...radio} />;
+          return <RadioCard className='' key={value} color={color} symbol={symbol} {...radio} />;
         })}
       </HStack>
+      <Box
+        className='animate__animated animate__fadeInUpBig'
+        boxShadow='xl'
+        w='75%'
+        h='100px'
+        position='fixed'
+        bottom={0}
+        bg='purple.800'
+        style={{
+          textAlign: 'center',
+          clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
+        }}
+      ></Box>
     </Center>
   );
 }
