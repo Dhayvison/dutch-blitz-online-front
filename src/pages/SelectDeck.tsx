@@ -1,31 +1,33 @@
 import * as React from 'react';
-import { Box, Center, HStack, useRadio, useRadioGroup } from '@chakra-ui/react';
+import { Box, Center, HStack, RadioProps, useRadio, useRadioGroup } from '@chakra-ui/react';
 import Timer from '../components/Timer';
 
-// eslint-disable-next-line
-function RadioCard(props: any) {
-  const { getInputProps, getCheckboxProps } = useRadio(props);
+type DeckRadioCardProps = {
+  color: string;
+  symbol: string;
+  radioProps: RadioProps;
+};
+
+function DeckRadioCard({ color, symbol, radioProps }: DeckRadioCardProps) {
+  const { getInputProps, getCheckboxProps } = useRadio(radioProps);
 
   const input = getInputProps();
   const checkbox = getCheckboxProps();
 
   return (
     <Center
-      boxShadow='base'
       className='animate__animated animate__flipInY'
       style={{
         aspectRatio: '1 / 1.618',
       }}
-      maxW='16vw'
-      overflow='hidden'
-      position='relative'
+      w='16vw'
       px={5}
     >
       <Box
         as='label'
         cursor='pointer'
-        width='100%'
-        background={props.color}
+        w='100%'
+        bg={color}
         style={{
           clipPath: 'polygon(5% 0%, 95% 0%, 100% 5%, 100% 95%, 95% 100%, 5% 100%, 0% 95%, 0% 5%)',
           transition: 'transform 0.18s ease-in-out',
@@ -34,12 +36,9 @@ function RadioCard(props: any) {
         _checked={{
           transform: 'scale(1.3)',
         }}
-        _focus={{
-          boxShadow: 'outline',
-        }}
       >
         <input {...input} />
-        <Box fontSize={300}>{props.symbol}</Box>
+        <Box fontSize={300}>{symbol}</Box>
       </Box>
       <svg
         style={{ position: 'absolute', pointerEvents: 'none' }}
@@ -73,24 +72,28 @@ function RadioCard(props: any) {
 
 export default function SelectDeck() {
   const options = [
-    { symbol: '🦈', value: 'shark', color: 'teal.400' },
-    { symbol: '🐆', value: 'cheetah', color: 'yellow.400' },
-    { symbol: '🐺', value: 'wolf', color: 'pink.600' },
-    { symbol: '🦅', value: 'hawk', color: 'red.600' },
+    { symbol: '🦈', value: 'shark', color: 'teal.400', isInvalid: true },
+    { symbol: '🐆', value: 'cheetah', color: 'yellow.400', isInvalid: true },
+    { symbol: '🐺', value: 'wolf', color: 'pink.600', isInvalid: true },
+    { symbol: '🦅', value: 'hawk', color: 'red.600', isInvalid: true },
   ];
+
+  const handleSelectDeck = (deckName: string) => {
+    console.log(deckName);
+  };
 
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: 'deck',
-    onChange: console.log,
+    onChange: handleSelectDeck,
   });
 
   const group = getRootProps();
+
   return (
     <Center h='100vh'>
       <Box
         boxShadow='base'
         className='animate__animated animate__slideInDown'
-        maxW='25%'
         position='fixed'
         top={0}
         px={40}
@@ -106,19 +109,17 @@ export default function SelectDeck() {
       <HStack {...group} gap={10}>
         {options.map(({ symbol, value, color }) => {
           const radio = getRadioProps({ value });
-          return <RadioCard className='' key={value} color={color} symbol={symbol} {...radio} />;
+          return <DeckRadioCard key={value} color={color} symbol={symbol} radioProps={radio} />;
         })}
       </HStack>
       <Box
         className='animate__animated animate__fadeInUpBig'
-        boxShadow='xl'
         w='75%'
         h='100px'
         position='fixed'
         bottom={0}
-        bg='purple.800'
+        bg='purple.700'
         style={{
-          textAlign: 'center',
           clipPath: 'polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%)',
         }}
       ></Box>
