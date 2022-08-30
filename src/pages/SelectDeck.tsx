@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Box, Center, HStack, RadioProps, useRadio, useRadioGroup } from '@chakra-ui/react';
 import Timer from '../components/Timer';
+import { SocketContext } from '../context/socket-context';
 
 type DeckRadioCardProps = {
   color: string;
@@ -71,15 +72,16 @@ function DeckRadioCard({ color, symbol, radioProps }: DeckRadioCardProps) {
 }
 
 export default function SelectDeck() {
+  const socket = React.useContext(SocketContext);
   const options = [
-    { symbol: '🦈', value: 'shark', color: 'teal.400', isInvalid: true },
-    { symbol: '🐆', value: 'cheetah', color: 'yellow.400', isInvalid: true },
-    { symbol: '🐺', value: 'wolf', color: 'pink.600', isInvalid: true },
-    { symbol: '🦅', value: 'hawk', color: 'red.600', isInvalid: true },
+    { symbol: '🦈', value: 'shark', color: 'teal.400', isAvailable: true },
+    { symbol: '🐆', value: 'cheetah', color: 'yellow.400', isAvailable: true },
+    { symbol: '🐺', value: 'wolf', color: 'pink.600', isAvailable: true },
+    { symbol: '🦅', value: 'hawk', color: 'red.600', isAvailable: true },
   ];
 
   const handleSelectDeck = (deckName: string) => {
-    console.log(deckName);
+    socket.emit('player_select_deck', deckName);
   };
 
   const { getRootProps, getRadioProps } = useRadioGroup({

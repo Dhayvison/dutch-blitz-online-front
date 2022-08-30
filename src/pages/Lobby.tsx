@@ -37,7 +37,7 @@ export default function Lobby() {
   React.useEffect(() => {
     socket.on('players', handleReadyPlayers);
     socket.on('start_game', () => {
-      navigate('/game', { replace: true });
+      navigate('/select-deck', { replace: true });
     });
   }, []);
 

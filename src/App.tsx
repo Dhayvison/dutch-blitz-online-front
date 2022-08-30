@@ -11,7 +11,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Lobby />}></Route>
-        <Route path='/game' element={<SelectDeck />}></Route>
+        <Route path='/select-deck' element={<SelectDeck />}></Route>
       </Routes>
     </BrowserRouter>
   );
